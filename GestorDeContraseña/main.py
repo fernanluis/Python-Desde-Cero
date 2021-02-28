@@ -51,9 +51,9 @@ def menu():
         elif opcion == '3':
             buscar_contrasena()
         elif opcion == '4':
-            print('Modificando contraseñas...')
+            modificar_contrasena()
         elif opcion == '5':
-            print('Eliminando contraseñas...')
+            eliminar_contrasena()
         elif opcion == '6':
             break
         else:
@@ -96,4 +96,30 @@ def buscar_contrasena():
         # tablefmt le da un tipo de formato a la tabla
         print('\t\t\tTodas las contraseñas')
         print(tabla)
+
+def modificar_contrasena():
+    contrasena_maestra = getpass('Ingrese su contraseña maestra: ')#por seguridad ingresar su contraseña maestra
+    respuesta = Usuario.comprobar_contrasena(1, contrasena_maestra)
+    if (len(respuesta)) == 0:
+        print('Contraseña correcta')
+    else:
+        id = input('Ingrese el id de la contraseña a modificar: ')
+        nombre = input('Ingrese el nuevo nombre: ')
+        url = input('Ingrese la nueva url: ')
+        nombre_usuario = input('Ingrese el nuevo nombre de usuario: ')
+        contrasena = input('Ingrese la nueva contraseña: ')
+        description = input('Ingrese la nueva descripción: ')
+        respuesta = Contrasena.modificar(id, nombre, url, nombre_usuario, contrasena, description)
+        print(respuesta)
+
+def eliminar_contrasena():
+    contrasena_maestra = getpass('Ingrese su contraseña maestra: ')#por seguridad ingresar su contraseña maestra
+    respuesta = Usuario.comprobar_contrasena(1, contrasena_maestra)
+    if (len(respuesta)) == 0:
+        print('Contraseña correcta')
+    else:
+        id = input('Ingrese el id de la contraseña a eliminar: ')
+        respuesta = Contrasena.eliminar(id)
+        print(respuesta)
+
 inicio()
