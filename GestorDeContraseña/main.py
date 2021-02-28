@@ -6,6 +6,7 @@ from tabulate import tabulate # debe ser descargado 'pip install tabulate' porqu
 from Conexion import * # importar el módulo de conexión de la base de datos.
 # from Usuario import * da error
 import Usuario
+import Contrasena
 
 conexion = conectar()
 crear_tablas(conexion)
@@ -44,11 +45,11 @@ def menu():
         print('\t-6 Salir')
         opcion = input('Ingrese una opción: ')
         if opcion == '1':
-            print('Añadiendo contraseña...')
+            nueva_contrasena()
         elif opcion == '2':
-            print('Visualizando contraseñas...')
+            mostrar_contrasenas()
         elif opcion == '3':
-            print('Visualizando una contraseña...')
+            buscar_contrasena()
         elif opcion == '4':
             print('Modificando contraseñas...')
         elif opcion == '5':
@@ -58,4 +59,41 @@ def menu():
         else:
             print('No ha ingresado una opción válida.')
 
+# capturar los datos para registrar y también para mostrar lo que devuelve la función registrar contraseña
+def nueva_contrasena():
+    nombre = input('Ingrese el nombre: ')
+    url = input('Ingrese la url: ')
+    nombre_usuario = input('Ingrese el nombre de usuario: ')
+    contrasena = input('Ingrese la contrasena: ')
+    description = input('Ingrese la description: ')
+    respuesta = Contrasena.registrar(nombre, url, nombre_usuario, contrasena, description)
+    print(respuesta)
+
+def mostrar_contrasenas():
+    datos = Contrasena.mostrar()
+    nuevos_datos = [] # nueva lista vacía
+    headers = ['ID', 'NOMBRE', 'URL', 'USUARIO', 'CONTRASEÑA', 'DESCRIPTION']
+    for dato in datos:# recorrer cada datos de sus datos, recorriendo cada una de las tuplas
+        convertido = list(dato)
+        convertido[4] = '********'
+        nuevos_datos.append(convertido)
+    # tabla = tabulate(datos, headers, tablefmt='fancy_grid') #tabla a mostrar
+    tabla = tabulate(nuevos_datos, headers, tablefmt='fancy_grid') #tabla a mostrar
+    # tablefmt le da un tipo de formato a la tabla
+    print('\t\t\tTodas las contraseñas')
+    print(tabla)
+
+def buscar_contrasena():
+    contrasena_maestra = getpass('Ingrese su contraseña maestra: ')#por seguridad ingresar su contraseña maestra
+    respuesta = Usuario.comprobar_contrasena(1, contrasena_maestra)
+    if (len(respuesta)) == 0:
+        print('Contraseña correcta')
+    else:
+        id = input('Ingrese el id de la contraseña a buscar: ')
+        datos = Contrasena.buscar(id)
+        headers = ['ID', 'NOMBRE', 'URL', 'USUARIO', 'CONTRASEÑA', 'DESCRIPTION']
+        tabla = tabulate(datos, headers, tablefmt='fancy_grid') #tabla a mostrar
+        # tablefmt le da un tipo de formato a la tabla
+        print('\t\t\tTodas las contraseñas')
+        print(tabla)
 inicio()
